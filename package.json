@@ -1,0 +1,29 @@
+{
+  "name": "playwright_test_js",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "setup": "npm i && npx playwright install --with-deps",
+    "nvm_use": "nvm use",
+    "remove_reports": "rm -rf html_report",
+    "e2e_tests_stage": "cross-env test_env=stage npx playwright test --config=e2e.playwright.config.ts --project=e2e",
+    "e2e_tests_prod": "cross-env test_env=prod npx playwright test --config=e2e.playwright.config.ts --project=e2e"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@playwright/test": "^1.49.0",
+    "@types/node": "^22.9.3",
+    "axios": "^1.7.7",
+    "cross-env": "^7.0.3",
+    "dotenv": "^16.4.5",
+    "fs": "^0.0.1-security",
+    "ortoni-report": "^2.0.8",
+    "path": "^0.12.7",
+    "speakeasy": "^2.0.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.2"
+  }
+}
