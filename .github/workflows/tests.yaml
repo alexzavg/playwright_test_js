@@ -95,7 +95,7 @@ jobs:
   deploy_to_gh_pages:
     name: 🚀 Deploy to GitHub Pages
     runs-on: ubuntu-latest
-    needs: [run_stage_tests, run_prod_tests]  # Wait for both jobs
+    needs: [run_stage_tests, run_prod_tests]
     if: |
       needs.run_stage_tests.result == 'success' || 
       needs.run_stage_tests.result == 'failure' || 
