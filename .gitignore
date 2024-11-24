@@ -16,6 +16,6 @@ html-report
 test_users.txt
 Scripts/test_users.txt
 test_logs
-html_report
+#html_report
 html_reports
 tests-examples
