@@ -1,4 +1,5 @@
-import { Page, expect, test } from "@playwright/test";
+import { Page, expect } from "@playwright/test"
+import { test, step } from '../utils/envName'
 
 export class PageActions {
 
@@ -9,13 +10,13 @@ export class PageActions {
   };
 
   public async openUrl(url: string) {
-    await test.step(`Navigate to URL: '${url}'`, async () => {
+    await step(`Navigate to URL: '${url}'`, async () => {
       await this.page.goto(url);
     });
   };
 
   public async refreshPage() {
-    await test.step(`Refresh page`, async () => {
+    await step(`Refresh page`, async () => {
       await this.page.reload();
       await this.page.waitForLoadState('load');
       await this.page.waitForLoadState('domcontentloaded');
@@ -25,7 +26,7 @@ export class PageActions {
   };
 
   public async waitForUrl(url: string) {
-    await test.step(`Wait until page URL is: '${url}'`, async () => {
+    await step(`Wait until page URL is: '${url}'`, async () => {
       await this.page.waitForURL(url);
       await this.page.waitForLoadState('load');
       await this.page.waitForLoadState('domcontentloaded');
@@ -35,37 +36,37 @@ export class PageActions {
   };
 
   public async waitForElement(locator: string) {
-    await test.step(`Wait until element: '${locator}' is visible`, async () => {
+    await step(`Wait until element: '${locator}' is visible`, async () => {
       await this.page.waitForSelector(locator);
     });
   };
 
   public async waitForElementInvisible(locator: string) {
-    await test.step(`Wait until element: '${locator}' is invisible`, async () => {
+    await step(`Wait until element: '${locator}' is invisible`, async () => {
       await expect(this.page.locator(locator)).not.toBeVisible();
     });
   };
 
   public async waitForElementEnabled(locator: string) {
-    await test.step(`Wait until element: '${locator}' doesn't have "disabled" attribute`, async () => {
+    await step(`Wait until element: '${locator}' doesn't have "disabled" attribute`, async () => {
       await expect(this.page.locator(locator)).toBeEnabled();
     });
   };
 
   public async waitForElementEditable(locator: string) {
-    await test.step(`Wait until element: '${locator}' doesn't have "readonly" property`, async () => {
+    await step(`Wait until element: '${locator}' doesn't have "readonly" property`, async () => {
       await expect(this.page.locator(locator)).toBeEditable();
     });
   };
 
   public async clickElement(locator: string) {
-    await test.step(`Click element locator: '${locator}'`, async () => {
+    await step(`Click element locator: '${locator}'`, async () => {
       await this.page.locator(locator).click();
     });
   };
 
   public async clickElementForce(locator: string) {
-    await test.step(`Click element locator: '${locator}'`, async () => {
+    await step(`Click element locator: '${locator}'`, async () => {
       await this.page.locator(locator).click({
         button: 'middle',
         clickCount: 10,
@@ -75,7 +76,7 @@ export class PageActions {
   };
 
   public async clickElementCentre(locator: string) {
-    await test.step(`Click element locator: '${locator}'`, async () => {
+    await step(`Click element locator: '${locator}'`, async () => {
       const selector = this.page.locator(locator);
       const box = await selector.boundingBox();
       // await selector.scrollIntoViewIfNeeded();
@@ -84,20 +85,20 @@ export class PageActions {
   };
 
   public async fillElement(locator: string, text: string) {
-    await test.step(`Fill element locator: '${locator}' with text: '${text}'`, async () => {
+    await step(`Fill element locator: '${locator}' with text: '${text}'`, async () => {
       const selector = this.page.locator(locator);
       await selector.fill(text);
     });
   };
 
   public async pressKey(key: string) {
-     await test.step(`Press '${key}' key`, async () => {
+     await step(`Press '${key}' key`, async () => {
       await this.page.keyboard.press(key);
     });
   };
 
   public async checkElementAttribute(locator: string, attr: string, value: string) {
-    await test.step(`Get attribute: '${attr}' from element: '${locator}'`, async () => {
+    await step(`Get attribute: '${attr}' from element: '${locator}'`, async () => {
       const selector = this.page.locator(locator);
       const attribute = await selector.getAttribute(attr);
       await expect(attribute).toEqual(value);
@@ -105,7 +106,7 @@ export class PageActions {
   };
 
   public async waitForElementAttribute(locator: string, attr: string, value: string, timeout = 60000) {
-    await test.step(`Check element '${locator}' for attribute '${attr}'`, async () => {
+    await step(`Check element '${locator}' for attribute '${attr}'`, async () => {
       const selector = this.page.locator(locator);
       
       await this.page.waitForFunction(
@@ -126,7 +127,7 @@ export class PageActions {
   }
 
   public async checkElementText(locator: string, text: string) {
-    await test.step(`Check text from element with locator: '${locator}'`, async () => {
+    await step(`Check text from element with locator: '${locator}'`, async () => {
       const selector = this.page.locator(locator);
       const textValue = await selector.textContent();
       await expect(textValue).toEqual(text);
@@ -135,7 +136,7 @@ export class PageActions {
 
   public async getElementText(locator: string) {
     let text;
-    await test.step(`Get text from element with locator: '${locator}'`, async () => {
+    await step(`Get text from element with locator: '${locator}'`, async () => {
       const selector = this.page.locator(locator);
       text = await selector.textContent();
     });
@@ -143,7 +144,7 @@ export class PageActions {
   };
 
   public async selectDropdownOption(locator: string, option: string) {
-    await test.step(`Select '${option}' from dropdown with locator '${locator}'`, async () => {
+    await step(`Select '${option}' from dropdown with locator '${locator}'`, async () => {
       const dropdown = await this.page.$(locator);
       await dropdown!.click();
   
@@ -153,27 +154,27 @@ export class PageActions {
   };
 
   public async checkCheckbox(locator: string) {
-    await test.step(`Check checkbox with locator '${locator}'`, async () => {
+    await step(`Check checkbox with locator '${locator}'`, async () => {
       await this.page.locator(locator).check();
       await expect(this.page.locator(locator)).toBeChecked();
     });
   };
 
   public async isCheckboxChecked(locator: string) {
-    await test.step(`Check checkbox with locator '${locator}'`, async () => {
+    await step(`Check checkbox with locator '${locator}'`, async () => {
       await expect(this.page.locator(locator)).toBeChecked();
     });
   };
 
   public async uncheckCheckbox(locator: string) {
-    await test.step(`Uncheck checkbox with locator '${locator}'`, async () => {
+    await step(`Uncheck checkbox with locator '${locator}'`, async () => {
       await this.page.locator(locator).uncheck();
       await expect(this.page.locator(locator)).not.toBeChecked();
     });
   };
 
   public async isCheckboxUnchecked(locator: string) {
-    await test.step(`Check checkbox with locator '${locator}'`, async () => {
+    await step(`Check checkbox with locator '${locator}'`, async () => {
       await expect(this.page.locator(locator)).not.toBeChecked();
     });
   };
