@@ -12,9 +12,9 @@ test.describe('Parabank New User Sign Up', () => {
       await mainPage.waitForSignUpHeader()
     })
 
-    // await step('this step fails', async () => {
-    //   expect(true).toBe(false)
-    // })
+    await step('this step fails', async () => {
+      expect(true).toBe(false)
+    })
   })
 
 })
