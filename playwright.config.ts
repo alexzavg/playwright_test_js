@@ -1,20 +1,4 @@
 import { defineConfig } from '@playwright/test';
-import { OrtoniReportConfig } from "ortoni-report";
-
-const reportConfig: OrtoniReportConfig = {
-  open: process.env.CI ? "never" : "on-failure",
-  folderPath: `html_report`,
-  filename: "index.html",
-  title: "Playwright Test Report",
-  showProject: false,
-  projectName: "Automation Tests",
-  testType: "E2E Tests",
-  authorName: "Oleksandr Zavhorodnii",
-  base64Image: false,
-  stdIO: true,
-  preferredTheme: "dark",
-  port: 3600
-};
 
 /**
  * See https://playwright.dev/docs/test-configuration.
@@ -33,7 +17,6 @@ export default defineConfig({
   globalSetup: 'utils/globalSetup.ts',
   reporter: [
     ['list'],
-    //["ortoni-report", reportConfig]
     ['html', {
       outputFolder: 'html_report',
       open: 'never',
