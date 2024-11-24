@@ -59,7 +59,7 @@ jobs:
       id: run_e2e_stage
       if: steps.install_deps.outcome == 'success' && (github.event_name == 'schedule' || github.event.inputs.test_suite == 'E2E' || github.event.inputs.test_suite == 'ALL')
       run: |
-        xvfb-run npm run $E2E_STAGE || exit 1
+        xvfb-run npm run $E2E_STAGE
 
     - name: Deploy to GitHub Pages
       if: steps.run_e2e_stage.outcome == 'success' || steps.run_e2e_stage.outcome == 'failure'
