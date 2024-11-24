@@ -23,7 +23,6 @@
     "cross-env": "^7.0.3",
     "dotenv": "^16.4.5",
     "fs": "^0.0.1-security",
-    "ortoni-report": "^2.0.8",
     "path": "^0.12.7",
     "speakeasy": "^2.0.0",
     "ts-node": "^10.9.2",
