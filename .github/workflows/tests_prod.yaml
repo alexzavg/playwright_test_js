@@ -59,6 +59,7 @@ jobs:
       id: run_e2e_prod
       if: steps.install_deps.outcome == 'success' && (github.event_name == 'schedule' || github.event.inputs.test_suite == 'E2E' || github.event.inputs.test_suite == 'ALL')
       run: xvfb-run npm run $E2E_PROD
+      continue-on-error: false
 
     - name: Deploy to GitHub Pages
       if: steps.run_e2e_prod.outcome == 'success' || steps.run_e2e_prod.outcome == 'failure'
