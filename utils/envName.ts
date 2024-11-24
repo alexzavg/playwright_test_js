@@ -1,27 +1,43 @@
-import { test as base } from '@playwright/test';
-import { color, logger } from '../scripts/common';
+import { test as base, Page } from '@playwright/test'
+import { color } from './common'
+import { PageManager } from './pageManager'
 
-// New test.step function that logs the step name before calling the original function
-export const step = async (name, callback) => {
+// Extend TestFixtures to include custom fixtures
+type TestFixtures = {
+  saveLogs: void // Custom saveLogs fixture
+  pageManager: PageManager // PageManager fixture
+}
+
+// Custom test with extended fixtures
+export const test = base.extend<TestFixtures>({
+  // Custom fixture for logging environment variables
+  saveLogs: [
+    async ({}, use) => {
+      console.log(color.info(`<<< ENVIRONMENT: ${process.env.ENV_NAME} >>>`))
+      console.log(color.info(`Working directory: ${process.cwd()}`))
+      await use()
+    },
+    { auto: true },
+  ],
+
+  // Custom fixture for the PageManager
+  pageManager: async ({ page }, use) => {
+    const pageManager = new PageManager(page) // Initialize PageManager
+    await use(pageManager) // Provide it in the test context
+  },
+})
+
+// Step function for enhanced logging
+export const step = async (name: string, callback: () => Promise<void>): Promise<void> => {
   try {
-    await base.step(name, callback);
-    console.log(color.success(`Test step [${name}] passed`));
+    await test.step(name, callback)
+    console.log(color.success(`Test step [${name}] passed`))
   } catch (error) {
     if (error instanceof Error) {
-      console.log(color.error(`Test step [${name}] failed: ${error.message}`));
+      console.log(color.error(`Test step [${name}] failed: ${error.message}`))
     } else {
-      console.log(color.error(`Test step [${name}] failed: ${error}`));
+      console.log(color.error(`Test step [${name}] failed: ${error}`))
     }
-    throw new Error(`Test step [${name}] failed`);
+    throw new Error(`Test step [${name}] failed`)
   }
-};
-
-// Logs the environment variables before each test
-export const test = base.extend<{ saveLogs: void }>({
-  saveLogs: [ async ({page}, use) => {
-    console.log(color.info(`<<< ENVIRONMENT: ${process.env.ENV_NAME} >>>`));
-    console.log(color.info(`Working directory: ${process.cwd()}`));
-    //await logger(page);
-    await use();
-  }, { auto: true } ]
-});
+}

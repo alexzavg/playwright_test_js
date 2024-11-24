@@ -19,7 +19,7 @@ const config: PlaywrightTestConfig = {
   retries: 0,
   use: {
     ...base.use,
-    headless: true,
+    headless: false,
     viewport: null,
     ignoreHTTPSErrors: true,
     launchOptions: {
