@@ -33,12 +33,12 @@ export default defineConfig({
   globalSetup: 'utils/globalSetup.ts',
   reporter: [
     ['list'],
-    ["ortoni-report", reportConfig]
-    // ['html', {
-    //   outputFolder: 'playwright-report',
-    //   open: 'never',
-    //   inlineImages: true
-    // }],
+    //["ortoni-report", reportConfig]
+    ['html', {
+      outputFolder: 'html_report',
+      open: 'never',
+      inlineImages: true
+    }],
   ],
   use: {
     actionTimeout: 120000,
