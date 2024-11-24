@@ -21,7 +21,7 @@ on:
       test_suite:
         description: 'Test suite(s) to run'
         required: true
-        default: 'ALL'
+        default: 'E2E'
         type: choice
         options:
           - E2E
