@@ -1,9 +1,8 @@
-name: Tests
-run-name: 🧪 Tests
+name: Prod Tests
+run-name: 🧪 Prod Tests
 
 on:
   # schedule:
-   # - cron: '0 7 * * 1,3,5' # STAGE will run on weekdays at 09:00 (Kiev TZ) / 05:00 EST
    # - cron: '0 8 * * 1,3,5' # PROD will run on weekdays at 10:00 (Kiev TZ) / 06:00 EST
   push:
     branches:
@@ -13,10 +12,9 @@ on:
       environment:
         description: 'Environment to run the tests against'
         required: true
-        default: 'STAGE'
+        default: 'PROD'
         type: choice
         options:
-          - STAGE
           - PROD
       test_suite:
         description: 'Test suite(s) to run'
@@ -25,44 +23,13 @@ on:
         type: choice
         options:
           - E2E
-          - ALL
 
 # variables https://github.com/alexzavg/playwright_test_js/settings/variables/actions
 env:
-  E2E_STAGE:              ${{vars.E2E_TESTS_STAGE}}
   E2E_PROD:               ${{vars.E2E_TESTS_PROD}}
   NODE_VERSION:           22.x
 
 jobs:
-  run_stage_tests:
-    name: ⚙️ Run STAGE Tests
-    runs-on: ubuntu-latest
-    if: github.event.schedule == '0 7 * * 1,3,5' || github.event.inputs.environment == 'STAGE'
-    steps:
-    - name: 🔎 List all environment variables
-      run: env | sort
-
-    - name: Checkout
-      uses: actions/checkout@v4
-
-    - name: 📗 Use node.js ${{ env.NODE_VERSION }}
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ env.NODE_VERSION }}
-
-    - name: 🔽 Install dependencies
-      id: install_deps
-      run: |
-        npm ci
-        npx playwright install chrome
-
-    - name: 📝 Create .env file
-      run: echo "${{secrets.CONFIG_STAGE}}" > .env.stage
-
-    - name: ⚙️ Run e2e tests
-      if: steps.install_deps.outcome == 'success' && (github.event_name == 'schedule' || github.event.inputs.test_suite == 'E2E' || github.event.inputs.test_suite == 'ALL')
-      run: xvfb-run npm run $E2E_STAGE
-
   run_prod_tests:
     name: ⚙️ Run PROD Tests
     runs-on: ubuntu-latest
@@ -89,25 +56,13 @@ jobs:
       run: echo "${{secrets.CONFIG_PROD}}" > .env.prod
 
     - name: ⚙️ Run e2e tests
+      id: run_e2e_prod
       if: steps.install_deps.outcome == 'success' && (github.event_name == 'schedule' || github.event.inputs.test_suite == 'E2E' || github.event.inputs.test_suite == 'ALL')
       run: xvfb-run npm run $E2E_PROD
 
-  deploy_to_gh_pages:
-    name: 🚀 Deploy to GitHub Pages
-    runs-on: ubuntu-latest
-    needs: [run_stage_tests, run_prod_tests]
-    if: |
-      needs.run_stage_tests.result == 'success' || 
-      needs.run_stage_tests.result == 'failure' || 
-      needs.run_prod_tests.result == 'success' || 
-      needs.run_prod_tests.result == 'failure'
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v4
-  
     - name: Deploy to GitHub Pages
+      if: steps.run_e2e_prod.outcome == 'success' || steps.run_e2e_prod.outcome == 'failure'
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: html_report
-      
