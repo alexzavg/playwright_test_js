@@ -3,13 +3,14 @@ import { test, step } from '../../../utils/envName'
 
 test.describe('Parabank New User Sign Up', () => {
 
-  test('New User Sign Up', async ({ pageManager }) => {
-    const mainPage = pageManager.mainPage
+  test.beforeEach(async ({pageManager}) => {
+    await pageManager.mainPage.openMainPage()
+  })
 
+  test('New User Sign Up', async ({pageManager}) => {
     await step('navigates to sign up form', async () => {
-      await mainPage.openMainPage()
-      await mainPage.clickRegisterLink()
-      await mainPage.waitForSignUpHeader()
+      await pageManager.mainPage.clickRegisterLink()
+      await pageManager.mainPage.waitForSignUpHeader()
     })
 
     await step('this step fails', async () => {
