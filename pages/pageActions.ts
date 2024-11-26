@@ -104,40 +104,64 @@ export class PageActions {
 
   async waitForElementAttribute(
     locator: Locator,
-    attr: string,
-    value: string,
-    timeout = 60000
+    attribute: string,
+    expectedValue: string,
+    timeout: number = 10000
   ) {
-    await step(`waits for element '${locator}' to have attribute '${attr}' with value '${value}'`, async () => {
-      const pollingInterval = 1000 // Poll every second
+    await step(`Wait for element '${locator}' to have attribute '${attribute}' with value: '${expectedValue}'`, async () => {
       const startTime = Date.now()
-
-      while (Date.now() - startTime < timeout) {
-        const currentValue = await locator.evaluate((el, attr) => el.getAttribute(attr), attr)
-        if (currentValue === value) {
-          const attribute = await locator.getAttribute(attr)
-          expect(attribute).toBe(value)
-          return // Attribute value matches, exit early
+  
+      while (true) {
+        const attributeValue = await locator.getAttribute(attribute)
+  
+        if (attributeValue?.trim() === expectedValue) {
+          return
         }
-        await new Promise(resolve => setTimeout(resolve, pollingInterval)) // Wait before retrying
+  
+        if (Date.now() - startTime > timeout) {
+          throw new Error(
+            `Timeout exceeded while waiting for element '${locator}' to have attribute '${attribute}' with value '${expectedValue}'. Actual value: '${attributeValue}'`
+          )
+        }
+  
+        await new Promise(resolve => setTimeout(resolve, 1000))
       }
-
-      throw new Error(
-        `Timed out after ${timeout}ms waiting for element to have attribute '${attr}' with value '${value}'`
-      )
     })
   }
+  
 
   async checkElementText(locator: Locator, text: string) {
-    await step(`checks text from element with locator: '${locator}'`, async () => {
+    await step(`checks text inside the element: '${locator}'`, async () => {
       const textValue = await locator.textContent()
       await expect(textValue).toEqual(text)
     })
   }
 
+  async waitForElementText(locator: Locator, expectedText: string, timeout: number = 30000) {
+    await step(`Wait for element '${locator}' to have text: '${expectedText}'`, async () => {
+      const startTime = Date.now()
+  
+      while (true) {
+        const textValue = await locator.textContent()
+  
+        if (textValue?.trim() === expectedText) {
+          return
+        }
+  
+        if (Date.now() - startTime > timeout) {
+          throw new Error(
+            `Timeout exceeded while waiting for element '${locator}' to have text '${expectedText}'. Actual text: '${textValue}'`
+          )
+        }
+  
+        await new Promise(resolve => setTimeout(resolve, 1000))
+      }
+    })
+  }
+
   async getElementText(locator: Locator) {
     let text
-    await step(`gets text from element with locator: '${locator}'`, async () => {
+    await step(`gets text from element: '${locator}'`, async () => {
       text = await locator.textContent()
     })
     return text as string
