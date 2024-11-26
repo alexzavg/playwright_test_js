@@ -9,6 +9,10 @@ export default defineConfig({
       name: 'e2e',
       testMatch: ['/tests/e2e/**/*.spec.ts']
     },
+    {
+      name: 'api',
+      testMatch: ['/tests/api/*.spec.ts']
+    }
   ],
   timeout: 1000 * 60 * 5, // 5 minutes
   expect: { 

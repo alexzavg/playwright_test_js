@@ -1,37 +1,44 @@
+import { expect } from '@playwright/test'
 import axios from 'axios'
 
-class APIRequest {
-    baseUrl
-    authToken
-
-    constructor(baseUrl, authToken) {
-        this.baseUrl = baseUrl
-        this.authToken = authToken
-    }
-
-    async postRequest(endpoint, body) {
-        try {
-            const response = await axios.post(`${this.baseUrl}${endpoint}`, {
-                headers: {
-                    Authorization: `Bearer ${this.authToken}`,
-                    'Content-Type': 'application/json',
-                },
-                data: body, // JSON obj
-            })
-
-            if (response.status !== 200) {
-                console.error(`Unexpected status code: ${response.status}`)
-                throw new Error('API response status is not 200')
-            }
-
-            console.log('Response Code:', response.status)
-            console.log('Response Body:', response.data)
-
-            return response.data
-        } catch (error) {
-            console.error('Error during API request:', error.message)
-            throw error
-        }
+export class APIRequest {
+    async getBitcoinPrice() {
+        const url = process.env.BASE_URL_API!
+        const response = await axios.get(url)
+    
+        // Assertions
+        expect(response.status).toBe(200)
+        expect(response.data).toHaveProperty('time')
+        expect(response.data.time).toHaveProperty('updated')
+        expect(typeof response.data.time.updated).toBe('string')
+        expect(response.data.time).toHaveProperty('updatedISO')
+        expect(response.data.time.updatedISO).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\+00:00$/)
+        expect(response.data.time).toHaveProperty('updateduk')
+        expect(typeof response.data.time.updateduk).toBe('string')
+    
+        expect(response.data).toHaveProperty('disclaimer')
+        expect(typeof response.data.disclaimer).toBe('string')
+    
+        expect(response.data).toHaveProperty('chartName')
+        expect(response.data.chartName).toBe('Bitcoin')
+    
+        expect(response.data).toHaveProperty('bpi')
+        const currencies = ['USD', 'GBP', 'EUR']
+        currencies.forEach(currency => {
+            expect(response.data.bpi).toHaveProperty(currency)
+            expect(response.data.bpi[currency]).toHaveProperty('code')
+            expect(response.data.bpi[currency].code).toBe(currency)
+            expect(response.data.bpi[currency]).toHaveProperty('symbol')
+            expect(typeof response.data.bpi[currency].symbol).toBe('string')
+            expect(response.data.bpi[currency]).toHaveProperty('rate')
+            expect(typeof response.data.bpi[currency].rate).toBe('string')
+            expect(response.data.bpi[currency]).toHaveProperty('description')
+            expect(typeof response.data.bpi[currency].description).toBe('string')
+            expect(response.data.bpi[currency]).toHaveProperty('rate_float')
+            expect(typeof response.data.bpi[currency].rate_float).toBe('number')
+            expect(response.data.bpi[currency].rate_float).toBeGreaterThan(0)
+            console.log(`Bitcoin price is: ${response.data.bpi[currency].rate} ${currency}`)
+        })
     }
 }
 

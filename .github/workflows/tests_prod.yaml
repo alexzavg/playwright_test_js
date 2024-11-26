@@ -23,10 +23,13 @@ on:
         type: choice
         options:
           - E2E
+          - API
+          - ALL
 
 # variables https://github.com/alexzavg/playwright_test_js/settings/variables/actions
 env:
   E2E_PROD:               ${{vars.E2E_TESTS_PROD}}
+  API_PROD:               ${{vars.API_TESTS_PROD}}
   NODE_VERSION:           22.x
 
 jobs:
@@ -60,6 +63,12 @@ jobs:
       if: steps.install_deps.outcome == 'success' && (github.event_name == 'schedule' || github.event.inputs.test_suite == 'E2E' || github.event.inputs.test_suite == 'ALL')
       run: |
         xvfb-run npm run $E2E_PROD
+
+    - name: ⚙️ Run API tests
+      id: run_api_prod
+      if: steps.install_deps.outcome == 'success' && (github.event_name == 'schedule' || github.event.inputs.test_suite == 'API' || github.event.inputs.test_suite == 'ALL')
+      run: |
+        xvfb-run npm run $API_PROD
 
     - name: Deploy to GitHub Pages
       if: always()
