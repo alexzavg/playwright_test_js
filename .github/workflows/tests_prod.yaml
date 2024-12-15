@@ -34,6 +34,7 @@ env:
   SLACK_WEBHOOK:          ${{vars.SLACK_WEBHOOK}}
   SLACK_USER:             ${{vars.SLACK_USER}}
   TZ:                     ${{vars.TZ}}
+  CI_PIPELINE_URL:        "https://github.com/alexzavg/playwright_test_js/actions/runs/${{github.run_id}}"
   REPORT_URL:             ${{vars.REPORT_URL_PROD}}
   NODE_VERSION:           22.x
 
