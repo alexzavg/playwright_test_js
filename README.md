@@ -1,6 +1,9 @@
 - [Setup](#setup)
 - [Documentation](#documentation)
 
+# Repository overview
+Repo overview can be found here: https://www.youtube.com/watch?v=Cp9c_aPE3rQ
+
 # Setup
 To set the foundation for the tests on your local env simply go through the following steps:
 1. Clone this repo
